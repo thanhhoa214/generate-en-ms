@@ -1,0 +1,9 @@
+#source {
+  height: 38rem !important;
+  font-size: 24px;
+}
+#en,
+#ms {
+  height: 17rem !important;
+  font-size: 18px;
+}
