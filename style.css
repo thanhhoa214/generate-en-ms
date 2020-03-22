@@ -7,3 +7,11 @@
   height: 17rem !important;
   font-size: 18px;
 }
+img {
+  display: inline-block;
+  max-width: 5rem;
+  height: 3rem;
+  width: auto;
+  border-radius: 0.5rem;
+  border: 2px solid white;
+}
