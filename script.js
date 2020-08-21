@@ -1,29 +1,29 @@
-const generateKey = text => {
+const generateKey = (text) => {
   const nonSpecialLowerText = text
     .trim()
-    .replace(/[^a-z0-9\s\n]+/gi, "")
+    .replace(/[^a-z0-9\s\n]+/gi, '')
     .toLowerCase();
   let key = nonSpecialLowerText;
   if (nonSpecialLowerText.length > 30) {
     const lastNearest30thSpaceIndex = nonSpecialLowerText
       .substring(0, 30)
-      .lastIndexOf(" ");
+      .lastIndexOf(' ');
     if (lastNearest30thSpaceIndex === -1) key = text;
     else key = nonSpecialLowerText.substring(0, lastNearest30thSpaceIndex);
   }
 
-  return key.replace(/\s/g, "_");
+  return key.replace(/\s/g, '_');
 };
 
-const copyTextToClipboard = textAreaId => {
-  const element = $("#" + textAreaId);
+const copyTextToClipboard = (textAreaId) => {
+  const element = $('#' + textAreaId);
   const smallAlertBtn = $(`[data-for=${textAreaId}]`);
 
   element.select();
-  document.execCommand("copy");
-  smallAlertBtn.removeClass("d-none");
+  document.execCommand('copy');
+  smallAlertBtn.removeClass('d-none');
   setTimeout(() => {
-    smallAlertBtn.addClass("d-none");
+    smallAlertBtn.addClass('d-none');
   }, 700);
 
   if (window.getSelection) {
@@ -45,7 +45,7 @@ function debounce(func, wait, immediate) {
     const context = this;
     const args = arguments;
 
-    const later = function() {
+    const later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
@@ -60,15 +60,14 @@ function debounce(func, wait, immediate) {
   };
 }
 
-const mainProcess = async event => {
-  const sourceLang = "en";
-  const targetLang = "ms";
-  console.log("hello");
+const mainProcess = async (event) => {
+  const sourceLang = 'en';
+  const targetLang = 'vi';
 
   const sourceText = event.target.value;
   let result = {
     en: {},
-    ms: {}
+    vi: {},
   };
 
   const url = `https://translate.googleapis.com/language/translate/v2?source=${sourceLang}&target=${targetLang}&format=text&key=AIzaSyDGOrd72uuMXDHOzWLQD7g9O_E1YmcRQQU&q=${encodeURI(
@@ -78,29 +77,29 @@ const mainProcess = async event => {
   // Get Malaysian
   const response = await fetch(url);
   const { data } = await response.json();
-  const { translatedText: msTranslated } = data.translations[0];
+  const { translatedText: viTranslated } = data.translations[0];
 
   const enLines = sourceText.split(/\n/);
-  const msLines = msTranslated.split(/\n/);
+  const viLines = viTranslated.split(/\n/);
 
   enLines.forEach((enLine, index) => {
     const key = generateKey(enLine);
     result = {
       en: {
         ...result.en,
-        [key]: enLine
+        [key]: enLine,
       },
-      ms: {
-        ...result.ms,
-        [key]: msLines[index]
-      }
+      vi: {
+        ...result.vi,
+        [key]: viLines[index],
+      },
     };
   });
 
-  $("#en").text(JSON.stringify(result.en, null, "\t"));
-  $("#ms").text(JSON.stringify(result.ms, null, "\t"));
+  $('#en').text(JSON.stringify(result.en, null, '\t'));
+  $('#vi').text(JSON.stringify(result.vi, null, '\t'));
 };
 
-$("#source").on("keyup", debounce(mainProcess, 1000));
-$("#copy-en").on("click", e => copyTextToClipboard("en"));
-$("#copy-ms").on("click", e => copyTextToClipboard("ms"));
+$('#source').on('keyup', debounce(mainProcess, 1000));
+$('#copy-en').on('click', (e) => copyTextToClipboard('en'));
+$('#copy-vi').on('click', (e) => copyTextToClipboard('vi'));
